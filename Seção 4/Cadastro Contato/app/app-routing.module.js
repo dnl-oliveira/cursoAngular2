@@ -7,13 +7,28 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 const core_1 = require("@angular/core");
 const router_1 = require("@angular/router");
+const contatos_lista_component_1 = require("./contatos/contatos-lista.component");
+const contato_detalhe_component_1 = require("./contatos/contato-detalhe.component");
 const appRoutes = [
     {
         path: '',
         redirectTo: '/contato',
         pathMatch: 'full'
+    },
+    {
+        path: 'contato',
+        component: contatos_lista_component_1.ContatosListaComponent
+    },
+    {
+        path: 'contato/save',
+        component: contato_detalhe_component_1.ContatoDetalheComponent
+    },
+    {
+        path: 'contato/save/:id',
+        component: contato_detalhe_component_1.ContatoDetalheComponent
     }
 ];
+//export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);
 let AppRoutingModule = class AppRoutingModule {
 };
 AppRoutingModule = __decorate([
