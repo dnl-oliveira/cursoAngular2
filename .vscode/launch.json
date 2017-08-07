@@ -11,7 +11,8 @@
             "program": "${file}",
             "outFiles": [
                 "${workspaceRoot}/out/**/*.js"
-            ]
+            ],
+            "protocol": "legacy"
         }
     ]
 }

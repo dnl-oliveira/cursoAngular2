@@ -18,19 +18,49 @@ let ContatoDetalheComponent = class ContatoDetalheComponent {
         this.contatoService = contatoService;
         this.route = route;
         this.location = location;
+        this.isNew = true;
     }
     ngOnInit() {
         this.contato = new contato_model_1.Contato(0, '', '', '');
         this.route.params.forEach((params) => {
             let id = +params['id'];
-            this.contatoService.getContato(id)
-                .then((contato) => {
-                this.contato = contato;
-            });
+            if (id) {
+                this.isNew = false;
+                this.contatoService.getContato(id)
+                    .then((contato) => {
+                    this.contato = contato;
+                });
+            }
         });
     }
-    teste() {
-        console.log(this.contato);
+    getFormGroupClass(isValid, isPristine) {
+        return {
+            'form-group': true,
+            'has-danger': !isValid && !isPristine,
+            'has-success': isValid && !isPristine
+        };
+    }
+    getFormControlClass(isValid, isPristine) {
+        return {
+            'form-control': true,
+            'form-control-danger': !isValid && !isPristine,
+            'form-control-success': isValid && !isPristine
+        };
+    }
+    onSubmit() {
+        let promise;
+        if (this.isNew) {
+            console.log('cadastrar novo');
+            promise = this.contatoService.create(this.contato);
+        }
+        else {
+            console.log('alterar contato');
+            promise = this.contatoService.update(this.contato);
+        }
+        promise.then(contato => this.goBack());
+    }
+    goBack() {
+        this.location.back();
     }
 };
 ContatoDetalheComponent = __decorate([

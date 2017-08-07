@@ -10,15 +10,64 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 const core_1 = require("@angular/core");
 const contato_service_1 = require("./contato.service");
+const dialog_service_1 = require("./../dialog.service");
 let ContatosListaComponent = class ContatosListaComponent {
-    constructor(contatoService) {
+    constructor(contatoService, dialogService) {
         this.contatoService = contatoService;
+        this.dialogService = dialogService;
+        this.contatos = [];
     }
     ngOnInit() {
         this.contatoService.getContatos()
             .then((contatos) => {
             this.contatos = contatos;
-        }).catch(err => console.log(err));
+        }).catch(err => {
+            console.log(err);
+            this.mostrarMensagem({
+                tipo: 'danger',
+                texto: 'Ocorreu um erro ao carregar a lista!'
+            });
+        });
+    }
+    onDelete(contato) {
+        this.dialogService.confirm('Deseja contato ' + contato.nome + '?')
+            .then((canDelete) => {
+            if (canDelete) {
+                this.contatoService.delete(contato)
+                    .then(() => {
+                    this.contatos = this.contatos.filter(c => c.id != contato.id);
+                    this.mostrarMensagem({
+                        tipo: 'success',
+                        texto: 'Contato deletado!'
+                    });
+                }).catch(err => {
+                    this.mostrarMensagem({
+                        tipo: 'danger',
+                        texto: 'Não foi possivel deletar contato!'
+                    });
+                    console.log(err);
+                });
+            }
+        });
+        let promise;
+        promise = this.contatoService.delete(contato);
+        //promise.then(contato => this.location.back());
+    }
+    mostrarMensagem(mensagem) {
+        this.mensagem = mensagem;
+        this.montarClasses(mensagem.tipo);
+        if (this.currentTimeout) {
+            clearTimeout(this.currentTimeout);
+        }
+        this.currentTimeout = setTimeout(() => {
+            this.mensagem = undefined;
+        }, 3000);
+    }
+    montarClasses(tipo) {
+        this.classesCss = {
+            'alert': true
+        };
+        this.classesCss['alert-' + tipo] = true;
     }
 };
 ContatosListaComponent = __decorate([
@@ -27,7 +76,8 @@ ContatosListaComponent = __decorate([
         selector: 'contatos-lista',
         templateUrl: 'contatos-lista.component.html'
     }),
-    __metadata("design:paramtypes", [contato_service_1.ContatoService])
+    __metadata("design:paramtypes", [contato_service_1.ContatoService,
+        dialog_service_1.DialogService])
 ], ContatosListaComponent);
 exports.ContatosListaComponent = ContatosListaComponent;
 //# sourceMappingURL=contatos-lista.component.js.map
